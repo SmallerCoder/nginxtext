@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <title>
+            
+        How to build hsdis-amd64.dll and hsdis-i386.dll on Windows
+    
+        </title>
+        <link href="./How to build hsdis-amd64.dll and hsdis-i386.dll on Windows_files/style.css" rel="stylesheet" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </head>
+    <body>
+        <main>
+            <h1>
+                
+        How to build <code>hsdis-amd64.dll</code> and <code>hsdis-i386.dll</code> on Windows
+    
+            </h1>
+            
+        <ol>
+            <li>
+                <a href="https://cygwin.com/install.html">Install Cygwin</a>. At the <samp>Select Packages</samp> screen, add the following packages (by expanding the <samp>Devel</samp> category, then clicking once on the <samp>Skip</samp> label next to each package name):
+                <ul>
+                    <li>
+                        <code>gcc-core</code>
+                    </li>
+                    <li>
+                        <code>make</code>
+                    </li>
+                    <li>
+                        <code>mingw64-i686-gcc-core</code> (only needed for <code>hsdis-i386.dll</code>)
+                    </li>
+                    <li>
+                        <code>mingw64-x86_64-gcc-core</code> (only needed for <code>hsdis-amd64.dll</code>)
+                    </li>
+                    <li>
+                        <code>patch</code>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                Run the Cygwin Terminal. This can be done using the Desktop or Start Menu icon created by the installer, and will create your Cygwin home directory (<code>C:\cygwin\home\<var>username</var></code> or <code>C:\cygwin64\home\<var>username</var></code>, by default).
+            </li>
+            <li>
+                <a href="https://ftpmirror.gnu.org/binutils/binutils-2.30.tar.xz" download="">Download GNU binutils 2.30</a> (the latest version, at the time of writing; newer versions may or may not work) to your Cygwin home directory, and extract it with <kbd><code>tar xvf binutils-2.30.tar.xz</code></kbd>.
+            </li>
+            <li>
+                <a href="http://hg.openjdk.java.net/">Go to the OpenJDK repositories</a>, navigate to the appropriate repository (which may be something like <code>jdk8u/jdk8u/hotspot</code> or <code>jdk-updates/jdk9u/hotspot</code>), select <kbd><samp>tags</samp></kbd>, then the tag corresponding to your installed JRE version (as indicated by <kbd><code>java -version</code></kbd>), then <kbd><samp>bz2</samp></kbd>. Save the file to your Cygwin home directory, and extract it with <kbd><code>tar xvf hotspot-<var>hash</var>.tar.bz2</code></kbd>.
+            </li>
+            <li>
+                <a href="https://dropzone.nfshost.com/hsdis.diff" download="">Download my hsdis patch</a> to your Cygwin home directory.
+            </li>
+            <li>
+                Change to the hsdis directory with <kbd><code>cd hotspot-<var>hash</var>/src/share/tools/hsdis</code></kbd>.
+            </li>
+            <li>
+                Apply the patch with <kbd><code>patch &lt; ~/hsdis.diff</code></kbd>.
+            </li>
+            <li>
+                Build <code>hsdis-amd64.dll</code> with <kbd><code>make MINGW=x86_64-w64-mingw32 BINUTILS=~/binutils-2.30</code></kbd>, and/or <code>hsdis-i386.dll</code> with <kbd><code>make MINGW=i686-w64-mingw32 BINUTILS=~/binutils-2.30</code></kbd>.
+            </li>
+        </ol>
+        <p>
+            The DLL can now be installed by copying it from <code>build\Linux-amd64</code> or <code>build\Linux-i586</code> to your JRE’s <code>bin\server</code> or <code>bin\client</code> directory.
+        </p>
+        <p>
+            Note that <a href="https://www.gnu.org/licenses/gpl-faq.html#v2v3Compatibility">binutils and OpenJDK use incompatible licenses</a>. As I understand it, this means that it is legal to combine them for personal use, but not to distribute the result. Because of this, I cannot provide prebuilt DLLs.
+        </p>
+        <p>
+            Bonus tip: if you prefer Intel ASM syntax to AT&amp;T, specify <kbd><code>-XX:PrintAssemblyOptions=intel</code></kbd> alongside any other PrintAssembly options you use.
+        </p>
+    
+        </main>
+        <footer>
+            
+                <nav>
+                    <small><a href="https://dropzone.nfshost.com/">Index of dropzone.nfshost.com</a></small>
+                </nav>
+            
+            <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="Public Domain Dedication" src="./How to build hsdis-amd64.dll and hsdis-i386.dll on Windows_files/cc-zero.svg" width="88" height="31" /></a>
+        </footer>
+    </body>
+</html>
